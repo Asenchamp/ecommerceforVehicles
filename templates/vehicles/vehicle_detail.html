@@ -1,0 +1,49 @@
+{% load dict_filters %}
+
+
+<h1>{{ vehicle.make.name }} {{ vehicle.model }} ({{ vehicle.year }}) Details</h1>
+<p>Description: {{ vehicle.description }}</p>
+<p>Condition: {{ vehicle.condition }}</p>
+<p>Price: ${{ vehicle.price }}</p>
+<!-- Add other vehicle details as needed -->
+<p>Owner: <a href="{% url 'user_listings' vehicle.user.id %}"> {{ vehicle.user.username }} </a> </p>
+
+<h2>Images</h2>
+{% for image in vehicle_images %}
+    <img src="/media/{{ image.image_path }}" alt="{{ vehicle.model }}" width="300">
+{% empty %}
+    <p>No images available.</p>
+{% endfor %}
+
+<h2>Key Features</h2>
+<ul>
+    {% for feature in vehicle.key_features.all %}
+        <li>{{ feature.feature }}</li>
+    {% empty %}
+        <li>No features listed.</li>
+    {% endfor %}
+</ul>
+
+<h2>Related Vehicles</h2>
+{% if related_vehicles %}
+    <ul>
+        {% for related_vehicle in related_vehicles %}
+            <li>
+                <a href="{% url 'vehicle_detail' related_vehicle.id %}">{{ related_vehicle.make.name }} {{ related_vehicle.model }} ({{ related_vehicle.year }})</a>
+                {% with image=related_vehicle_images|get_item:related_vehicle.id %}
+                    {% if image %}
+                        <img src="/media/{{ image.image_path }}" alt="{{ related_vehicle.model }}" width="100">
+                    {% else %}
+                        <p>No image available.</p>
+                    {% endif %}
+                {% endwith %}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No related vehicles found.</p>
+{% endif %}
+
+<a href="{% url 'dashboard' %}"><button>Back to Dashboard</button></a>
+
+

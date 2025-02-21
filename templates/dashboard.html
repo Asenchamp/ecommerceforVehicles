@@ -1,0 +1,174 @@
+<!--
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Welcome, {{ request.user.username }}!</h1>
+    <a href="{% url 'updateProfile' user.id %}"><button>Edit Profile</button></a>
+    <p>YOUR VEHICLES</p>
+    {% if vehicles %}
+        <ul>
+            {% for Vehicle in vehicles %}
+                <li>  {{Vehicle.model}} </li> <br>
+                <a href="{% url 'editVehicle' Vehicle.id %}"><button>Edit Vehicle</button></a>
+                <a ><button onclick="confirmDelete(this,'{{Vehicle.model}}')" data-url="{% url 'deleteVehicle' Vehicle.id %}">Delete Vehicle</button></a><br>
+                {% if Vehicle.key_features.all %}
+                <p>KeyFeatures:</p><br>
+                    <ul>
+                        {% for feature in Vehicle.key_features.all %}
+                            <li>{{ feature.feature }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p> </p>
+                {% endif %}                
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No vehicles yet!</p>
+    {% endif %}
+    <a href="{% url 'logout' %}"><button>Logout</button></a>
+    <a href="{% url 'addVehicle' %}"><button>Add Vehicle</button></a>
+    <a href="{% url 'addSparepart' %}"><button>Add Sparepart</button></a>
+    <a href="{% url 'addService' %}"><button>Add Service</button></a>
+
+    <script>
+        function confirmDelete(button,vehicle){
+            if(confirm(`Are you sure to delete ${vehicle} ?`)){
+                window.location.href = button.getAttribute("data-url");
+            }
+        }
+    </script>
+</body>
+</html>
+-->
+
+
+
+{% load dict_filters %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Welcome, {{ request.user.username }}!</h1>
+    <a href="{% url 'updateProfile' user.id %}"><button>Edit Profile</button></a>
+    <p>YOUR VEHICLES</p>
+
+    <a href="{% url 'logout' %}"><button>Logout</button></a>
+    <a href="{% url 'addVehicle' %}"><button>Add Vehicle</button></a>
+    <a href="{% url 'addSparepart' %}"><button>Add Sparepart</button></a>
+    <a href="{% url 'addService' %}"><button>Add Service</button></a>
+
+    <h2>Vehicles</h2>
+    {% if vehicles %}
+        <ul>
+            {% for vehicle in vehicles %}
+                <li>
+                    <strong>{{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.year }})</strong>
+                    <a href="{% url 'editVehicle' vehicle.id %}"><button>Edit Vehicle</button></a>
+                    <a ><button onclick="confirmDelete(this,'{{vehicle.model}}')" data-url="{% url 'deleteVehicle' vehicle.id %}">Delete Vehicle</button></a><br>
+                    <div>
+                        {% with img=vehicle_images|get_item:vehicle.id %}
+                            {% if img %}
+                                <a href="{% url 'vehicle_detail' vehicle.id %}">
+                                    <img src="/media/{{ img.image_path }}" alt="{{ vehicle.model }}" width="150">
+                                </a>
+                            {% else %}
+                                <p>No image available</p>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                    <div>
+                        <p>Key Features:</p>
+                        <ul>
+                            {% for feature in vehicle.key_features.all %}
+                                <li>{{ feature.feature }}</li>
+                            {% empty %}
+                                <li>No features listed.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No vehicles found.</p>
+    {% endif %}
+
+    <h2>Spare Parts</h2>
+    {% if spareparts %}
+        <ul>
+            {% for part in spareparts %}
+                <li>{{ part.title }} - {{ part.description }}</li>
+                <a href="{% url 'editSparepart' part.id %}"><button>Edit SparePart</button></a>
+                <a ><button onclick="confirmDelete(this,'{{part.title}}')" data-url="{% url 'deleteSparepart' part.id %}">Delete SparePart</button></a><br>
+                
+                <div>
+                    {% with img=spareparts_images|get_item:part.id %}
+                        {% if img %}
+                            <a href="{% url 'sparepart_detail' part.id %}">
+                                <img src="/media/{{ img.image_path }}" alt="{{ part.title }}" width="150">
+                            </a>
+                        {% else %}
+                        <p>No image available</p>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No spare parts found.</p>
+    {% endif %}
+
+    <h2>Services</h2>
+    {% if services %}
+        <ul>
+            {% for service in services %}
+                <li>{{ service.type_of_service.name }} - {{ service.description }}</li>
+                <a href="{% url 'editService' service.id %}"><button>Edit Service</button></a>
+                <a ><button onclick="confirmDelete(this,'{{service.type_of_service.name}}')" data-url="{% url 'deleteService' service.id %}">Delete Service</button></a><br>
+                <div>
+                    {% with img=service_images|get_item:service.id %}
+                        {% if img %}
+                            <a href="{% url 'service_detail' service.id %}">
+                                <img src="/media/{{ img.image_path }}" alt="{{ service.type_of_service.name }}" width="150">
+                            </a>
+                        {% else %}
+                            <p>No image available</p>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+
+                <div>
+                    <p>Sub service:</p>
+                    <ul>
+                        {% for subservice in service.sub_services.all %}
+                            <li>{{ subservice.type_of_service.name }}</li>
+                        {% empty %}
+                            <li>No sub services listed.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No services found.</p>
+    {% endif %}
+
+    
+    <script>
+        function confirmDelete(button,vehicle){
+            if(confirm(`Are you sure to delete ${vehicle} ?`)){
+                window.location.href = button.getAttribute("data-url");
+            }
+        }
+    </script>
+</body>
+</html>

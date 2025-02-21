@@ -1,0 +1,48 @@
+{% load dict_filters %}
+
+
+<h1>{{ service.type_of_service.name }} Service Details</h1>
+<p>Description: {{ service.description }}</p>
+<p>Starting Price: ${{ service.start_price }}</p>
+<!-- Add other service details as needed -->
+<p>Owner: <a href="{% url 'user_listings' service.user.id %}"> {{ service.user.username }} </a> </p>
+
+<h2>Images</h2>
+{% for image in service_images %}
+    <img src="/media/{{ image.image_path }}" alt="{{ service.type_of_service.name }}" width="300">
+{% empty %}
+    <p>No images available.</p>
+{% endfor %}
+
+<h2>Sub Services</h2>
+<ul>
+    {% for subservice in service.sub_services.all %}
+        <li>{{ subservice.sub_type_of_service.name }}</li>
+    {% empty %}
+        <li>No sub services listed.</li>
+    {% endfor %}
+</ul>
+
+<h2>Related Services</h2>
+{% if related_services %}
+    <ul>
+        {% for related_service in related_services %}
+            <li>
+                <a href="{% url 'service_detail' related_service.id %}">{{ related_service.type_of_service.name }}</a>
+                {% with image=related_service_images|get_item:related_service.id %}
+                    {% if image %}
+                        <img src="/media/{{ image.image_path }}" alt="{{ related_service.type_of_service.name }}" width="100">
+                    {% else %}
+                        <p>No image available.</p>
+                    {% endif %}
+                {% endwith %}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No related services found.</p>
+{% endif %}
+
+<a href="{% url 'dashboard' %}"><button>Back to Dashboard</button></a>
+
+

@@ -1,0 +1,136 @@
+
+{% load dict_filters %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>VehicleSite Landing Page</title>
+</head>
+<body>
+    <h1>Welcome to VehicleSite</h1>
+    <p>Your one-stop destination for vehicles, spare parts, and services!</p>
+
+    <!-- Search Form -->
+    <form method="get" action="{% url 'landing' %}" class="search-form">
+        <input type="text" name="search" placeholder="Search..." value="{{ search_query }}">
+        <select name="vehicle_filter">
+            <option value="">All Vehicles</option>
+            <!-- Add options dynamically if you have predefined categories -->
+            <option value="Sedan" {% if vehicle_filter == 'Sedan' %}selected{% endif %}>Sedan</option>
+            <option value="SUV" {% if vehicle_filter == 'SUV' %}selected{% endif %}>SUV</option>
+            <!-- Add more options as needed -->
+        </select>
+        <select name="sparepart_filter">
+            <option value="">All Spare Parts</option>
+            <!-- Similar to vehicle_filter, add options for spare parts -->
+            <option value="Engine" {% if sparepart_filter == 'Engine' %}selected{% endif %}>Engine</option>
+            <!-- Add more options as needed -->
+        </select>
+        <select name="service_filter">
+            <option value="">All Services</option>
+            <!-- Similar to above, add options for services -->
+            <option value="Maintenance" {% if service_filter == 'Maintenance' %}selected{% endif %}>Maintenance</option>
+            <!-- Add more options as needed -->
+        </select>
+        <button type="submit">Search</button>
+    </form>
+
+    <!-- Option 1: List items separately -->
+    <h2>Vehicles</h2>
+    {% if vehicles %}
+        <ul>
+            {% for vehicle in vehicles %}
+                <li>
+                    <strong>{{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.year }})</strong>
+                    <div>
+                        {% with img=vehicle_images|get_item:vehicle.id %}
+                            {% if img %}
+                                <a href="{% url 'vehicle_detail' vehicle.id %}">
+                                    <img src="/media/{{ img.image_path }}" alt="{{ vehicle.model }}" width="150">
+                                </a>
+                            {% else %}
+                                <p>No image available</p>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                    <div>
+                        <p>Key Features:</p>
+                        <ul>
+                            {% for feature in vehicle.key_features.all %}
+                                <li>{{ feature.feature }}</li>
+                            {% empty %}
+                                <li>No features listed.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No vehicles found.</p>
+    {% endif %}
+
+    <h2>Spare Parts</h2>
+    {% if spareparts %}
+        <ul>
+            {% for part in spareparts %}
+                <li>{{ part.title }} - {{ part.description }}</li>
+
+                <div>
+                    {% with img=spareparts_images|get_item:part.id %}
+                        {% if img %}
+                            <a href="{% url 'sparepart_detail' part.id %}">
+                                <img src="/media/{{ img.image_path }}" alt="{{ part.title }}" width="150">
+                            </a>
+                        {% else %}
+                        <p>No image available</p>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No spare parts found.</p>
+    {% endif %}
+
+    <h2>Services</h2>
+    {% if services %}
+        <ul>
+            {% for service in services %}
+                <li>{{ service.type_of_service.name }} - {{ service.description }}</li>
+
+                <div>
+                    {% with img=service_images|get_item:service.id %}
+                        {% if img %}
+                            <a href="{% url 'service_detail' service.id %}">
+                                <img src="/media/{{ img.image_path }}" alt="{{ service.type_of_service.name }}" width="150">
+                            </a>
+                        {% else %}
+                            <p>No image available</p>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+
+                <div>
+                    <p>Sub service:</p>
+                    <ul>
+                        {% for subservice in service.sub_services.all %}
+                            <li>{{ subservice.service }}</li>
+                        {% empty %}
+                            <li>No sub services listed.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No services found.</p>
+    {% endif %}
+
+    <!-- Links to login/signup -->
+    <a href="{% url 'login' %}"><button>Login</button></a>
+    <a href="{% url 'register' %}"><button>Sign Up</button></a>
+</body>
+</html>

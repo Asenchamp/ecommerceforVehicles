@@ -1,0 +1,101 @@
+{% load dict_filters %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ target_user.username }}'s Listings</title>
+</head>
+<body>
+    {% with img=profile_image|get_item:target_user.id %}
+        {% if img %}
+            <img src="/media/{{ img.image_path }}" alt="{{ target_user.username }}" width="150">
+        {% else %}
+            <p>No image available.</p>
+        {% endif %}
+    {% endwith %}
+    <h1>Listings for {{ target_user.username }}</h1>
+
+    <h2>Vehicles</h2>
+    {% if vehicles %}
+        <ul>
+            {% for vehicle in vehicles %}
+                <li>
+                    <strong>{{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.year }})</strong>
+                    <div>
+                        {% with img=vehicle_images|get_item:vehicle.id %}
+                            {% if img %}
+                                <a href="{% url 'vehicle_detail' vehicle.id %}">
+                                    <img src="/media/{{ img.image_path }}" alt="{{ vehicle.model }}" width="150">
+                                </a>
+                            {% else %}
+                                <p>No image available.</p>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                    <div>
+                        <p>Key Features:</p>
+                        <ul>
+                            {% for feature in vehicle.key_features.all %}
+                                <li>{{ feature.feature }}</li>
+                            {% empty %}
+                                <li>No features listed.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No vehicles found.</p>
+    {% endif %}
+
+    <h2>Spare Parts</h2>
+    {% if spareparts %}
+        <ul>
+            {% for sparepart in spareparts %}
+                <li>
+                    <strong>{{ sparepart.title }}</strong> - {{ sparepart.description }}
+                    <div>
+                        {% with img=spareparts_images|get_item:sparepart.id %}
+                            {% if img %}
+                                <a href="{% url 'sparepart_detail' sparepart.id %}">
+                                    <img src="/media/{{ img.image_path }}" alt="{{ sparepart.title }}" width="150">
+                                </a>
+                            {% else %}
+                                <p>No image available.</p>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No spare parts found.</p>
+    {% endif %}
+
+    <h2>Services</h2>
+    {% if services %}
+        <ul>
+            {% for service in services %}
+                <li>
+                    <strong>{{ service.type_of_service.name }}</strong> - {{ service.description }}
+                    <div>
+                        {% with img=service_images|get_item:service.id %}
+                            {% if img %}
+                                <a href="{% url 'service_detail' service.id %}">
+                                    <img src="/media/{{ img.image_path }}" alt="{{ service.type_of_service.name }}" width="150">
+                                </a>
+                            {% else %}
+                                <p>No image available.</p>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No services found.</p>
+    {% endif %}
+
+    <p><a href="/">Back to Home</a></p>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!-- templates/registration/register.html 
+{ # % extends "base.html" %}
+-->
+{% load socialaccount %}
+{% block content %}
+  <h2>Register</h2>
+  <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Register</button>
+  </form>
+
+  <!--    Google sign up btn-->
+  <a href="{% provider_login_url 'google' %}" class="google-btn">
+    <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo" width="20">
+    Sign up with Google
+  </a>
+
+<p>Already have an account: <a href="{% url 'login' %}"><button>Login</button></a> </p>
+
+{% endblock %}

@@ -1,0 +1,39 @@
+{% load dict_filters %}
+
+
+<h1>{{ sparepart.title }} Details</h1>
+<p>Description: {{ sparepart.description }}</p>
+<p>Price: ${{ sparepart.price }}</p>
+<!-- Add other spare part details as needed -->
+ <p>Owner: <a href="{% url 'user_listings' sparepart.user.id %}"> {{ sparepart.user.username }} </a> </p>
+
+<h2>Images</h2>
+{% for image in sparepart_images %}
+    <img src="/media/{{ image.image_path }}" alt="{{ sparepart.title }}" width="300">
+{% empty %}
+    <p>No images available.</p>
+{% endfor %}
+
+<h2>Related Spare Parts</h2>
+{% if related_spareparts %}
+    <ul>
+        {% for related_sparepart in related_spareparts %}
+            <li>
+                <a href="{% url 'sparepart_detail' related_sparepart.id %}">{{ related_sparepart.title }}</a>
+                {% with image=related_sparepart_images|get_item:related_sparepart.id %}
+                    {% if image %}
+                        <img src="/media/{{ image.image_path }}" alt="{{ related_sparepart.title }}" width="100">
+                    {% else %}
+                        <p>No image available.</p>
+                    {% endif %}
+                {% endwith %}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No related spare parts found.</p>
+{% endif %}
+
+<a href="{% url 'dashboard' %}"><button>Back to Dashboard</button></a>
+
+
