@@ -1,4 +1,121 @@
-<!DOCTYPE html>
+{% extends 'formsMain.html' %}
+
+{% load socialaccount %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <h3>{% if object %} Edit {% else %} Add {% endif %} SparePart</h3>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+
+            <h2>SparePart Images</h2>
+            <div id="images">
+                {% for image in spareparts_images %}
+                    <div class="image-item">
+                        <img src="/media/{{ image.image_path }}" alt="sparepart Image" width="150">
+                        <label>
+                            <input type="checkbox" name="delete_images" value="{{ image.id }}"> Delete
+                        </label>
+                    </div>
+                {% empty %}
+
+                {% endfor %}
+
+                <p>
+                    <!-- <label for="id_images">SparePart Images: </label><br> -->
+                    <input type="file" name="images" id="id_images" multiple>
+                </p>
+                <button type="submit" class="btn btn-primary"  >{% if object %} Update {% else %} Add {% endif %}</button>
+
+        </form>
+    </div>
+</div>
+
+
+    <!--js to update the model-->
+    <script>
+        //wait the dom to finally load
+        document.addEventListener("DOMContentLoaded", function(){
+            var makeSelect = document.getElementById("id_make");
+            var modelSelect = document.getElementById("id_model");
+            var typeSelect = document.getElementById("id_type");
+            var subtypeSelect = document.getElementById("id_subtype");
+
+            //when the make is changed
+            makeSelect.addEventListener("change", function(){
+                var makeId = makeSelect.value;
+                //use the fetch api to get models for the selected make
+                fetch("{% url 'ajaxLoadmodels' %}?make=" + makeId)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Received data: ", data);
+                        console.log("type of data: ", typeof data.models)
+                        //clear current opts in the model select box
+                        modelSelect.innerHTML = "";
+                        //add default opts
+                        var defaultOpt = document.createElement("option");
+                        defaultOpt.text = "---------------";
+                        defaultOpt.value = "";
+                        modelSelect.add(defaultOpt);
+
+                        //populate the model select box with the model options
+                        data.models.forEach(function(item){
+                            var option = document.createElement("option");
+                            option.value = item.id;
+                            option.text = item.name;
+                            modelSelect.add(option);
+                        });
+                    }).catch(error => console.error("Error fetching models: ", error));
+            });
+
+
+            //when the type is changed
+            typeSelect.addEventListener("change", function(){
+                var typeId = typeSelect.value;
+                //use the fetch api to get subtypes for the selected type
+                fetch("{% url 'ajaxLoadSubtypes' %}?type=" + typeId)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Received data: ", data);
+                        console.log("type of data: ", typeof data.subtype)
+                        //clear current opts in the subtype select box
+                        subtypeSelect.innerHTML = "";
+                        //add default opts
+                        var defaultOpt = document.createElement("option");
+                        defaultOpt.text = "---------------";
+                        defaultOpt.value = "";
+                        subtypeSelect.add(defaultOpt);
+
+                        //populate the subtype select box with the subtype options
+                        data.subtype.forEach(function(item){
+                            var option = document.createElement("option");
+                            option.value = item.id;
+                            option.text = item.name;
+                            subtypeSelect.add(option);
+                        });
+                    }).catch(error => console.error("Error fetching models: ", error));
+            });
+
+
+
+        });
+    </script>
+
+
+
+{% endblock %}
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
 <html>
     <head>
         <title>{% block title %}Add/Edit Sparepart {% endblock %}</title>
@@ -31,76 +148,9 @@
             <button type="submit">{% if object %} Update {% else %} Add {% endif %}</button>
         </form>
 
-        <!--js to update the model-->
-        <script>
-            //wait the dom to finally load
-            document.addEventListener("DOMContentLoaded", function(){
-                var makeSelect = document.getElementById("id_make");
-                var modelSelect = document.getElementById("id_model");
-                var typeSelect = document.getElementById("id_type");
-                var subtypeSelect = document.getElementById("id_subtype");
-
-                //when the make is changed
-                makeSelect.addEventListener("change", function(){
-                    var makeId = makeSelect.value;
-                    //use the fetch api to get models for the selected make
-                    fetch("{% url 'ajaxLoadmodels' %}?make=" + makeId)
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log("Received data: ", data);
-                            console.log("type of data: ", typeof data.models)
-                            //clear current opts in the model select box
-                            modelSelect.innerHTML = "";
-                            //add default opts
-                            var defaultOpt = document.createElement("option");
-                            defaultOpt.text = "---------------";
-                            defaultOpt.value = "";
-                            modelSelect.add(defaultOpt);
-
-                            //populate the model select box with the model options
-                            data.models.forEach(function(item){
-                                var option = document.createElement("option");
-                                option.value = item.id;
-                                option.text = item.name;
-                                modelSelect.add(option);
-                            });
-                        }).catch(error => console.error("Error fetching models: ", error));
-                });
-
-
-                //when the type is changed
-                typeSelect.addEventListener("change", function(){
-                    var typeId = typeSelect.value;
-                    //use the fetch api to get subtypes for the selected type
-                    fetch("{% url 'ajaxLoadSubtypes' %}?type=" + typeId)
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log("Received data: ", data);
-                            console.log("type of data: ", typeof data.subtype)
-                            //clear current opts in the subtype select box
-                            subtypeSelect.innerHTML = "";
-                            //add default opts
-                            var defaultOpt = document.createElement("option");
-                            defaultOpt.text = "---------------";
-                            defaultOpt.value = "";
-                            subtypeSelect.add(defaultOpt);
-
-                            //populate the subtype select box with the subtype options
-                            data.subtype.forEach(function(item){
-                                var option = document.createElement("option");
-                                option.value = item.id;
-                                option.text = item.name;
-                                subtypeSelect.add(option);
-                            });
-                        }).catch(error => console.error("Error fetching models: ", error));
-                });
-
-
-
-            });
-        </script>
+        
 
 
 
     </body>
-</html>
+</html> -->

@@ -12,6 +12,7 @@ urlpatterns = [
     path('dashboard/', views.dashboard.as_view(), name='dashboard'),
     path('accounts/logout/', LogoutView.as_view(next_page='/'), name='logout'),
     path('vehicle/add/',views.VehicleCreateView.as_view(), name='addVehicle'),
+    path('ajax/load-makes/', views.load_makes, name='ajaxLoadmakes'),
     path('ajax/load-models/', views.load_models, name='ajaxLoadmodels'),
     path('sparepart/add', views.SparepartCreateView.as_view(), name='addSparepart'),
     path('ajax/load-subtypes/', views.load_subtypes, name='ajaxLoadSubtypes'),

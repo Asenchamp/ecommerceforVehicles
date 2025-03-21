@@ -1,55 +1,161 @@
-<!--
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Dashboard</title>
-</head>
-<body>
-    <h1>Welcome, {{ request.user.username }}!</h1>
-    <a href="{% url 'updateProfile' user.id %}"><button>Edit Profile</button></a>
-    <p>YOUR VEHICLES</p>
-    {% if vehicles %}
-        <ul>
-            {% for Vehicle in vehicles %}
-                <li>  {{Vehicle.model}} </li> <br>
-                <a href="{% url 'editVehicle' Vehicle.id %}"><button>Edit Vehicle</button></a>
-                <a ><button onclick="confirmDelete(this,'{{Vehicle.model}}')" data-url="{% url 'deleteVehicle' Vehicle.id %}">Delete Vehicle</button></a><br>
-                {% if Vehicle.key_features.all %}
-                <p>KeyFeatures:</p><br>
-                    <ul>
-                        {% for feature in Vehicle.key_features.all %}
-                            <li>{{ feature.feature }}</li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p> </p>
-                {% endif %}                
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No vehicles yet!</p>
-    {% endif %}
-    <a href="{% url 'logout' %}"><button>Logout</button></a>
-    <a href="{% url 'addVehicle' %}"><button>Add Vehicle</button></a>
-    <a href="{% url 'addSparepart' %}"><button>Add Sparepart</button></a>
-    <a href="{% url 'addService' %}"><button>Add Service</button></a>
-
-    <script>
-        function confirmDelete(button,vehicle){
-            if(confirm(`Are you sure to delete ${vehicle} ?`)){
-                window.location.href = button.getAttribute("data-url");
-            }
-        }
-    </script>
-</body>
-</html>
--->
-
-
+{% extends 'main.html' %}
 
 {% load dict_filters %}
 
-<!DOCTYPE html>
+{% block content %}
+
+
+
+<div class="cart-table-area section-padding-100">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 col-lg-8">
+
+                <div class="cart-title mt-50">
+                    <h2>Hi {{ request.user.username }}</h2>
+                </div>
+
+
+                <div class="cart-table clearfix">
+                    <table class="table table-responsive">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th><a href="{% url 'addVehicle' %}">Add Vehicle</a></th>
+                                <th><a href="{% url 'addSparepart' %}">Add Sparepart</a></th>
+                                <th><a href="{% url 'addService' %}">Add Service</a></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if vehicles %}
+                                {% for vehicle in vehicles %}
+                                    <tr>
+                                        <td class="cart_product_img">
+
+                                            {% with img=vehicle_images|get_item:vehicle.id %}
+                                                {% if img %}
+                                                    <a href="{% url 'vehicle_detail' vehicle.id %}">
+                                                        <img src="/media/{{ img.image_path }}" alt="{{ vehicle.model }}" width="150">
+                                                    </a>
+                                                {% else %}
+                                                    <!-- <p>No image available.</p> -->
+                                                {% endif %}
+                                            {% endwith %}
+                                        </td>
+                                        <td class="cart_product_desc">
+                                            <h5>{{ vehicle.model }} </h5>
+                                        </td>
+                                        <td class="price">
+                                            <span>Ugx:{{ vehicle.price }}</span>
+                                        </td>
+                                        <td class="qty">
+                                            <div class="qty-btn d-flex">
+                                                <a href="{% url 'editVehicle' vehicle.id %}"><p><i class="fa fa-edit" aria-hidden="true"></i></p></a>  
+                                                <a onclick="confirmDelete(this,'{{vehicle.model}}')" data-url="{% url 'deleteVehicle' vehicle.id %}"><p><i class="fa fa-trash" aria-hidden="true"></i></p></a>                                         
+                                            </div>
+                                        </td>                                        
+                                    </tr>
+                                {% endfor %}
+                                {% else %}
+                            {% endif %}
+
+
+                            {% if spareparts %}
+                                {% for sparepart in spareparts %}
+                                    <tr>
+                                        <td class="cart_product_img">
+
+                                            {% with img=spareparts_images|get_item:sparepart.id %}
+                                                {% if img %}
+                                                    <a href="{% url 'sparepart_detail' sparepart.id %}">
+                                                        <img src="/media/{{ img.image_path }}" alt="{{ sparepart.title }}" width="150">
+                                                    </a>
+                                                {% else %}
+                                                    <!-- <p>No image available.</p> -->
+                                                {% endif %}
+                                            {% endwith %}
+                                        </td>
+                                        <td class="cart_product_desc">
+                                            <h5>{{ sparepart.title }} </h5>
+                                        </td>
+                                        <td class="price">
+                                            <span>Ugx:{{ sparepart.price }}</span>
+                                        </td> 
+                                        <td class="qty">
+                                            <div class="qty-btn d-flex">
+                                                <a href="{% url 'editSparepart' sparepart.id %}"><p><i class="fa fa-edit" aria-hidden="true"></i></p></a>
+                                                <a onclick="confirmDelete(this,'{{sparepart.title}}')" data-url="{% url 'deleteSparepart' sparepart.id %}"><p><i class="fa fa-trash" aria-hidden="true"></i></p></a>                                            
+                                            </div>
+                                        </td>                                        
+                                    </tr>
+                                {% endfor %}
+                                {% else %}
+                            {% endif %}
+
+
+                            {% if services %}
+                                {% for service in services %}
+                                    <tr>
+                                        <td class="cart_product_img">
+
+                                            {% with img=service_images|get_item:service.id %}
+                                                {% if img %}
+                                                    <a href="{% url 'service_detail' service.id %}">
+                                                        <img src="/media/{{ img.image_path }}" alt="{{ service.type_of_service.name }}" width="150">
+                                                    </a>
+                                                {% else %}
+                                                    <!-- <p>No image available.</p> -->
+                                                {% endif %}
+                                            {% endwith %}
+                                        </td>
+                                        <td class="cart_product_desc">
+                                            <h5>{{ service.type_of_service.name }}</h5>
+                                        </td>
+                                        <td class="price">
+                                            <span>Ugx:{{ service.start_price }}</span>
+                                        </td> 
+                                        <td class="qty">
+                                            <div class="qty-btn d-flex">
+                                                <a href="{% url 'editService' service.id %}"><p><i class="fa fa-edit" aria-hidden="true"></i></p></a>
+                                                <a onclick="confirmDelete(this,'{{service.type_of_service.name}}')" data-url="{% url 'deleteService' service.id %}"><p><i class="fa fa-trash" aria-hidden="true"></i></p></a>
+                                            </div>
+                                        </td>                                        
+                                    </tr>
+                                {% endfor %}
+                                {% else %}
+                            {% endif %}
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
 <html>
 <head>
     <title>Dashboard</title>
@@ -171,4 +277,4 @@
         }
     </script>
 </body>
-</html>
+</html> -->

@@ -64,9 +64,17 @@ INSTALLED_APPS = [
 
     #my apps
     'vehicles',
+
+    # Crispy Forms
+    'crispy_forms',
+    'crispy_bootstrap5',  # If using Bootstrap 5
 ]
 #setting site id
 SITE_ID = 2
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
 
 #configure django to use authentication backends of allauth and django's default
 AUTHENTICATION_BACKENDS = [
@@ -171,6 +179,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static'
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

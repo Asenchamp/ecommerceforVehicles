@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="description" content="">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        
+        <!-- Title  -->
+        <title>Vvuga - Uganda</title>
+
+        <!-- Favicon  -->
+        <!-- <link rel="icon" href="{% static 'img/core-img/favicon.ico' %}"> -->
+         <link rel="icon" href="{% static 'img/core-img/vuga.png' %}">
+
+        <!-- Core Style CSS -->
+        <link rel="stylesheet" href="{% static 'css/core-style.css' %}">
+        <link rel="stylesheet" href="{% static 'style.css' %}">
+
+        <style>
+            .dropdown {
+                position: relative;
+                display: inline-block;
+            }
+        
+            .dropdown-toggle {
+                text-decoration: none;
+                color: #007bff;
+                padding: 5px 10px;
+                border: 1px solid #007bff;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+        
+            .dropdown-toggle:hover {
+                background-color: #007bff;
+                color: white;
+            }
+        
+            .dropdown-content {
+                display: none;
+                position: absolute;
+                background-color: #f9f9f9;
+                min-width: 160px;
+                box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+                z-index: 1;
+                border-radius: 4px;
+            }
+        
+            .dropdown-content a {
+                color: black;
+                padding: 12px 16px;
+                text-decoration: none;
+                display: block;
+            }
+        
+            .dropdown-content a:hover {
+                background-color: #f1f1f1;
+            }
+        
+            .dropdown:hover .dropdown-content {
+                display: block;
+            }
+        
+            .filter-link.active {
+                background-color: #007bff;
+                color: white;
+                font-weight: bold;
+            }
+        </style>
+
+    </head>
+    <body>
+
+        <!-- Search Wrapper Area Start -->
+        <div class="search-wrapper section-padding-100">
+            <div class="search-close">
+                <i class="fa fa-close" aria-hidden="true"></i>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="search-content">
+                            <form method="get" action="{% url 'landing' %}" class="search-form">
+                                <input type="text" name="search" id="search" placeholder="Type your keyword..." value="{{ search_query }}">
+                                <button type="submit"><img src="{% static 'img/core-img/search.png' %}" alt=""></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Search Wrapper Area End -->
+
+        <!-- ##### Main Content Wrapper Start ##### -->
+        <div class="main-content-wrapper d-flex clearfix">
+            
+            {% include 'navbar.html' %}        
+                {% block content %}
+
+
+
+                {% endblock %}                
+        </div>
+
+        <script>
+            function confirmDelete(button,vehicle){
+                if(confirm(`Are you sure to delete ${vehicle} ?`)){
+                    window.location.href = button.getAttribute("data-url");
+                }
+            }
+
+            document.addEventListener("DOMContentLoaded", function() {
+        console.log("DOM fully loaded, starting script");
+
+        var form = document.querySelector('.search-form');
+        if (!form) {
+            console.error("Search form not found!");
+            return;
+        }
+        console.log("Search form found:", form);
+
+        // Target all select elements within the document that belong to the form
+        var selects = document.querySelectorAll('select[name="vehicle_filter"], select[name="sparepart_filter"], select[name="service_filter"]');
+        if (selects.length === 0) {
+            console.error("No target select elements found on page!");
+            return;
+        }
+
+        selects.forEach(function(select) {
+            console.log("Select element found:", select.id, "Name:", select.name);
+            select.addEventListener("change", function(e) {
+                console.log("Change event triggered for:", select.id, "Value:", this.value);
+                try {
+                    form.submit(); // Submit the form
+                    console.log("Form submission attempted");
+                } catch (error) {
+                    console.error("Form submission failed:", error);
+                }
+            });
+        });
+    });
+
+
+        </script>       
+
+        <!-- ##### jQuery (Necessary for All JavaScript Plugins) ##### -->
+        <script src="{% static 'js/jquery/jquery-2.2.4.min.js' %}"></script>
+        <!-- Popper js -->
+        <script src="{% static 'js/popper.min.js' %}"></script>
+        <!-- Bootstrap js -->
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+        <!-- Plugins js -->
+        <script src="{% static 'js/plugins.js' %}"></script>
+        <!-- Active js -->
+        <script src="{% static 'js/active.js' %}"></script>
+    </body>
+</html>

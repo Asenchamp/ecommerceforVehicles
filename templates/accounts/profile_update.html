@@ -1,4 +1,42 @@
-<!DOCTYPE html>
+{% extends 'formsMain.html' %}
+
+{% load socialaccount %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <h3>Update profile</h3>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+
+            <button type="submit" class="btn btn-primary"  >Save Changes</button>
+
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,4 +52,6 @@
         <button type="submit"> Save Changes</button>
     </form>
 </body>
-</html>
+</html> -->
+
+

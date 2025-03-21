@@ -1,10 +1,151 @@
+
+
+{% extends 'main.html' %}
+
+{% load dict_filters %}
+
+{% block content %}
+
+<!-- Product Details Area Start -->
+<div class="single-product-area section-padding-100 clearfix">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 col-lg-7">
+                <div class="single_product_thumb">
+                    <div id="product_details_slider" class="carousel slide" data-ride="carousel">
+                            
+                        <ol class="carousel-indicators">
+                            {% for image in service_images %}
+                                <li data-target="#product_details_slider" data-slide-to="{{ forloop.counter0 }}" 
+                                    style="background-image: url(/media/{{ image.image_path }});"
+                                    class="{% if forloop.first %}active{% endif %}">
+                                </li>
+                            {% empty %}
+                                <li>No images available.</li>
+                            {% endfor %}
+                        </ol>
+                        
+                        <div class="carousel-inner">
+                            {% for image in service_images %}
+                                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                    <a class="gallery_img" href="/media/{{ image.image_path }}">
+                                        <img class="d-block w-100" src="/media/{{ image.image_path }}" alt="Slide {{ forloop.counter }}">
+                                    </a>
+                                </div>
+                            {% empty %}
+                                <div class="carousel-item active">
+                                    <p>No images available.</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-5">
+                <div class="single_product_desc">
+                    <!-- Product Meta Data -->
+                    <div class="product-meta-data">
+                        <div class="line"></div>
+                        <p class="product-price">START PRICE Ugshs: {{ service.start_price }}</p>
+                        <a href="#">
+                            <h6>{{ service.type_of_service.name }}</h6>
+                        </a>
+
+                        <!-- Ratings & Review -->
+                        <div class="ratings-review mb-15 d-flex align-items-center justify-content-between">
+                            <div class="ratings">
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                            </div>
+                            <div class="review">
+                                <a href="{% url 'user_listings' service.user.id %}">Contact Seller</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Avaiable -->
+                        <p class="avaibility"><i class="fa fa-circle"></i> {{service.type_of_service.name}}</p>
+                    </div>
+
+                    <div class="short_overview my-5">
+                        <h4>Description</h4>
+                        <p>{{ service.description }}</p>
+                        <h4>Sub Services</h4>
+                        <ul>
+                            {% for subservice in service.sub_services.all %}
+                                <li>{{ subservice.sub_type_of_service.name }}</li>
+                            {% empty %}
+                                <li>No sub services listed.</li>
+                            {% endfor %}
+                        </ul>                        
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Product Details Area End -->
+
+<div class="amado_product_area section-padding-100">
+    <div class="container-fluid">
+        <div class="row"> 
+            <!--Vehichles-->
+            {% if related_services %}
+                {% for related_service in related_services %}
+                    <!-- Single Product Area -->
+                    <div class="col-12 col-sm-6 col-md-12 col-xl-6">
+                        <div class="single-product-wrapper">
+                            <!-- Product Image -->
+                            <div class="product-img">
+                                {% with img=related_service_images|get_item:related_service.id %}
+                                    {% if img %}
+                                        <a href="{% url 'service_detail' related_service.id %}">
+                                            <img src="/media/{{ img.image_path }}" alt="{{ related_services.type_of_service.name }}">
+                                        </a>
+                                    {% else %}
+                                        <p>No image available</p>
+                                    {% endif %}
+                                {% endwith %}
+                            </div>
+                            <!-- Product Description -->
+                            <div class="product-description d-flex align-items-center justify-content-between">
+                                <!-- Product Meta Data -->
+                                <div class="product-meta-data">
+                                    <div class="line"></div>
+                                    <p class="product-price">START PRICE Ugshs: {{related_service.start_price}}</p>
+                                    <a href="#">
+                                        <h6>{{related_service.type_of_service.name}}</h6>
+                                    </a>
+                                </div>                        
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No related services found.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+
+<!--
 {% load dict_filters %}
 
 
 <h1>{{ service.type_of_service.name }} Service Details</h1>
 <p>Description: {{ service.description }}</p>
 <p>Starting Price: ${{ service.start_price }}</p>
-<!-- Add other service details as needed -->
+
 <p>Owner: <a href="{% url 'user_listings' service.user.id %}"> {{ service.user.username }} </a> </p>
 
 <h2>Images</h2>
@@ -28,7 +169,7 @@
     <ul>
         {% for related_service in related_services %}
             <li>
-                <a href="{% url 'service_detail' related_service.id %}">{{ related_service.type_of_service.name }}</a>
+                <a href="{% url 'service_edtail' related_service.id %}">{{ related_service.type_of_service.name }}</a>
                 {% with image=related_service_images|get_item:related_service.id %}
                     {% if image %}
                         <img src="/media/{{ image.image_path }}" alt="{{ related_service.type_of_service.name }}" width="100">
@@ -44,5 +185,5 @@
 {% endif %}
 
 <a href="{% url 'dashboard' %}"><button>Back to Dashboard</button></a>
-
+-->
 

@@ -5,7 +5,7 @@ from .forms import UsersCreationForm
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import CustomUser, Vehicle, Model, SparePart, SubType, Service, TypeOfService, SubTypeOfService, Image, ServiceSubTypeOfService
+from .models import CustomUser, Vehicle, Model, SparePart, SubType, Service, TypeOfService, SubTypeOfService, Image, ServiceSubTypeOfService, Make
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .forms import UserUpdateForm, VehicleForm, SparePartForm, ServicesForm, EmailForm, OTPVerificationForm
 from django.http import JsonResponse
@@ -46,25 +46,39 @@ class landing_page(TemplateView):
 
         # Vehicles
         vehicles = Vehicle.objects.all().select_related('user').prefetch_related('key_features').order_by('-user__verified')
-        if search_query:
-            vehicles = vehicles.filter(Q(make__name__icontains=search_query) | Q(description__icontains=search_query))
-        if vehicle_filter:
-            vehicles = vehicles.filter(make__name__icontains=vehicle_filter)
-        
-        # Spare Parts
         spareparts = SparePart.objects.all().select_related('user').order_by('-user__verified')
-        if search_query:
-            spareparts = spareparts.filter(Q(type__name__icontains=search_query) | Q(description__icontains=search_query))
-        if sparepart_filter:
-            spareparts = spareparts.filter(type__name__icontains=sparepart_filter)
-        
-        # Services
         services = Service.objects.all().select_related('user').prefetch_related('sub_services').order_by('-user__verified')
-        if search_query:
-            services = services.filter(Q(type_of_service__name__icontains=search_query) | Q(description__icontains=search_query))
-        if service_filter:
-            services = services.filter(type_of_service__name__icontains=service_filter)
 
+
+        if search_query:            
+            vehicles = vehicles.filter(Q(make__name__icontains=search_query) | Q(description__icontains=search_query))
+            spareparts = spareparts.filter(Q(type__name__icontains=search_query) | Q(description__icontains=search_query))
+            services = services.filter(Q(type_of_service__name__icontains=search_query) | Q(description__icontains=search_query))
+
+
+        if vehicle_filter:   
+            if vehicle_filter == 'All':
+                vehicles = vehicles
+            else:
+                vehicles = vehicles.filter(make__name__icontains=vehicle_filter)  
+            spareparts = SparePart.objects.none()
+            services = Service.objects.none()          
+        if sparepart_filter:   
+            if sparepart_filter == 'All':
+                spareparts = spareparts
+            else:
+                spareparts = spareparts.filter(type__name__icontains=sparepart_filter)   
+            vehicles = Vehicle.objects.none()
+            services = Service.objects.none()         
+        if service_filter:            
+            if service_filter == 'All':
+                services = services
+            else:
+                services = services.filter(type_of_service__name__icontains=service_filter)
+            vehicles = Vehicle.objects.none()
+            spareparts = SparePart.objects.none()
+
+                                    
         context['vehicles'] = vehicles
         context['spareparts'] = spareparts
         context['services'] = services
@@ -172,7 +186,7 @@ def custom_login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('dashboard')
+            return redirect('landing')
         else:
             messages.error(request,'Invalid username or password')
     return render(request, 'registration/login.html')
@@ -379,6 +393,12 @@ def load_models(request):
         model_list = list(model_qs.values('id','name'))
         return JsonResponse({"models": model_list}, safe=False)
     return JsonResponse({"models":[]}, safe=False)
+
+
+def load_makes(request):
+    makes = Make.objects.values('id', 'name')  # Fetch all makes
+    return JsonResponse({"makes": list(makes)})
+
 
 # --- create the spare part --- 
 class SparepartCreateView(LoginRequiredMixin, CreateView, ImageHandlingMixin):

@@ -1,10 +1,141 @@
+
+{% extends 'main.html' %}
+
 {% load dict_filters %}
 
+{% block content %}
 
+<!-- Product Details Area Start -->
+<div class="single-product-area section-padding-100 clearfix">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 col-lg-7">
+                <div class="single_product_thumb">
+                    <div id="product_details_slider" class="carousel slide" data-ride="carousel">
+
+                    <ol class="carousel-indicators">
+                        {% for image in sparepart_images %}
+                            <li data-target="#product_details_slider" data-slide-to="{{ forloop.counter0 }}" 
+                                style="background-image: url(/media/{{ image.image_path }});"
+                                class="{% if forloop.first %}active{% endif %}">
+                            </li>
+                        {% empty %}
+                            <li>No images available.</li>
+                        {% endfor %}
+                    </ol>
+                    
+                    <div class="carousel-inner">
+                        {% for image in sparepart_images %}
+                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                <a class="gallery_img" href="/media/{{ image.image_path }}">
+                                    <img class="d-block w-100" src="/media/{{ image.image_path }}" alt="Slide {{ forloop.counter }}">
+                                </a>
+                            </div>
+                        {% empty %}
+                            <div class="carousel-item active">
+                                <p>No images available.</p>
+                            </div>
+                        {% endfor %}
+                    </div>                   
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-5">
+                <div class="single_product_desc">
+                    <!-- Product Meta Data -->
+                    <div class="product-meta-data">
+                        <div class="line"></div>
+                        <p class="product-price">Ugshs: {{ sparepart.price }}</p>
+                        <a href="#">
+                            <h6>{{ sparepart.title }}</h6>
+                        </a>
+
+                        <!-- Ratings & Review -->
+                        <div class="ratings-review mb-15 d-flex align-items-center justify-content-between">
+                            <div class="ratings">
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                            </div>
+                            <div class="review">
+                                <a href="{% url 'user_listings' sparepart.user.id %}">Contact Seller</a>
+                            </div>
+                        </div>
+                        
+                        <!-- Avaiable -->
+                        <p class="avaibility"><i class="fa fa-circle"></i> {{sparepart.subtype}}</p>
+                    </div>
+
+                    <div class="short_overview my-5">
+                        <h4>Condition</h4>
+                        <p>{{ sparepart.condition }}</p>
+                        <h4>Description</h4>
+                        <p>{{ sparepart.description }}</p>
+                                                
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Product Details Area End -->
+
+<div class="amado_product_area section-padding-100">
+    <div class="container-fluid">
+        <div class="row"> 
+            <!--Vehichles-->
+            {% if related_spareparts %}
+                {% for related_sparepart in related_spareparts %}
+                    <!-- Single Product Area -->
+                    <div class="col-12 col-sm-6 col-md-12 col-xl-6">
+                        <div class="single-product-wrapper">
+                            <!-- Product Image -->
+                            <div class="product-img">
+                                {% with img=related_sparepart_images|get_item:related_sparepart.id %}
+                                    {% if img %}
+                                        <a href="{% url 'sparepart_detail' related_sparepart.id %}">
+                                            <img src="/media/{{ img.image_path }}" alt="{{ related_sparepart.model }}">
+                                        </a>
+                                    {% else %}
+                                        <p>No image available</p>
+                                    {% endif %}
+                                {% endwith %}
+                            </div>
+                            <!-- Product Description -->
+                            <div class="product-description d-flex align-items-center justify-content-between">
+                                <!-- Product Meta Data -->
+                                <div class="product-meta-data">
+                                    <div class="line"></div>
+                                    <p class="product-price">Ugshs.{{related_sparepart.price}}</p>
+                                    <a href="#">
+                                        <h6>{{related_sparepart.title}}</h6>
+                                    </a>
+                                </div>                        
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No related spare parts found.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+
+<!--
 <h1>{{ sparepart.title }} Details</h1>
 <p>Description: {{ sparepart.description }}</p>
 <p>Price: ${{ sparepart.price }}</p>
-<!-- Add other spare part details as needed -->
+
  <p>Owner: <a href="{% url 'user_listings' sparepart.user.id %}"> {{ sparepart.user.username }} </a> </p>
 
 <h2>Images</h2>
@@ -35,5 +166,6 @@
 {% endif %}
 
 <a href="{% url 'dashboard' %}"><button>Back to Dashboard</button></a>
+-->
 
 

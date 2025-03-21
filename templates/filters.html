@@ -1,0 +1,63 @@
+{% load static %}
+
+<div class="row">
+    <div class="col-12">
+        <div class="product-topbar d-xl-flex align-items-end justify-content-between">
+                        
+            <!-- Sorting -->
+            <div class="product-sorting d-flex">
+                <!-- <div class="sort-by-date d-flex align-items-center mr-15">
+                    <p>Sort by</p>
+                    <form method="get" action="" class="search-form">
+                        <select name="vehicle_filter" id="sortBydate">
+
+                            <option value=" ">All Vehicles</option>
+                            <option value="Sedan" {% if vehicle_filter == 'Sedan' %}selected{% endif %}>Sedan</option>
+                            <option value="SUV" {% if vehicle_filter == 'SUV' %}selected{% endif %}>SUV</option>
+                            <option value="value">Popular</option>
+                            
+                        </select>                        
+                    </form>
+                </div> -->
+                <div class="view-product d-flex align-items-center">
+                    <p></p>
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-toggle" id="vehicleDropdown">All Vehicles</a>
+                        <div class="dropdown-content">
+                            <a href="{% url 'landing' %}?vehicle_filter=All" class="filter-link {% if not vehicle_filter or vehicle_filter == 'All' %}active{% endif %}">All Vehicles</a>
+                            <a href="{% url 'landing' %}?vehicle_filter=Toyota" class="filter-link {% if vehicle_filter == 'Toyota' %}active{% endif %}">Toyota</a>
+                            <a href="{% url 'landing' %}?vehicle_filter=SUV" class="filter-link {% if vehicle_filter == 'SUV' %}active{% endif %}">SUV</a>
+                            <a href="{% url 'landing' %}?vehicle_filter=popular" class="filter-link {% if vehicle_filter == 'popular' %}active{% endif %}">Popular</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="view-product d-flex align-items-center">
+                    <p></p>
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-toggle" id="sparepartDropdown">Spareparts</a>
+                        <div class="dropdown-content">
+                            <a href="{% url 'landing' %}?sparepart_filter=All" class="filter-link {% if not sparepart_filter or sparepart_filter == 'All' %}active{% endif %}">All Spare Parts</a>
+                            <a href="{% url 'landing' %}?sparepart_filter=Engine" class="filter-link {% if sparepart_filter == 'Engine' %}active{% endif %}">Engine</a>
+                            <a href="{% url 'landing' %}?sparepart_filter=value" class="filter-link {% if sparepart_filter == 'value' %}active{% endif %}">48</a>
+                            <a href="{% url 'landing' %}?sparepart_filter=value" class="filter-link {% if sparepart_filter == 'value' %}active{% endif %}">96</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="view-product d-flex align-items-center">
+                    <p></p>
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-toggle" id="serviceDropdown">Services</a>
+                        <div class="dropdown-content">
+                            <a href="{% url 'landing' %}?service_filter=All" class="filter-link {% if not service_filter or service_filter == 'All' %}active{% endif %}">All Services</a>
+                            <a href="{% url 'landing' %}?service_filter=Car Wash" class="filter-link {% if service_filter == 'Car Wash' %}active{% endif %}">Car Wash</a>
+                            <a href="{% url 'landing' %}?service_filter=value" class="filter-link {% if service_filter == 'value' %}active{% endif %}">48</a>
+                            <a href="{% url 'landing' %}?service_filter=value" class="filter-link {% if service_filter == 'value' %}active{% endif %}">96</a>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>

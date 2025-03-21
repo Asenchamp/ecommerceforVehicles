@@ -1,21 +1,47 @@
-<!-- templates/registration/register.html 
-{ # % extends "base.html" %}
--->
+{% extends 'formsMain.html' %}
+
 {% load socialaccount %}
+
+{% load crispy_forms_tags %}
+
 {% block content %}
-  <h2>Register</h2>
+
+<div class="container">
+  <div class="form-container">
+    <h3>Register</h3>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary mt3">Register</button>
+    </form>
+
+    <div class="text-center mt-3">
+        <!--    Google sign up btn-->
+        <a href="{% provider_login_url 'google' %}" class="google-btn">
+          <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo" width="20">
+          Sign up with Google
+        </a>
+
+          <p>Already have an account: <a href="{% url 'login' %}">Login</a> </p>
+    </div>
+
+  </div>
+</div>
+
+  <!-- <h2>Register</h2>
   <form method="post">
       {% csrf_token %}
       {{ form.as_p }}
       <button type="submit">Register</button>
   </form>
 
-  <!--    Google sign up btn-->
+    Google sign up btn
   <a href="{% provider_login_url 'google' %}" class="google-btn">
     <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo" width="20">
     Sign up with Google
   </a>
 
-<p>Already have an account: <a href="{% url 'login' %}"><button>Login</button></a> </p>
+<p>Already have an account: <a href="{% url 'login' %}"><button>Login</button></a> </p> -->
 
 {% endblock %}
