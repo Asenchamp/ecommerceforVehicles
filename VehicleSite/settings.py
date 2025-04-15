@@ -38,7 +38,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'asenlawrence05@gmail.com'
-EMAIL_HOST_PASSWORD = 'cnfp bsmy fyfr baiw'
+EMAIL_HOST_PASSWORD = ''
 
 # Company email address
 COMPANY_EMAIL = 'asenlawrence05@gmail.com'
